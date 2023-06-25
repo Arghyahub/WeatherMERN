@@ -10,7 +10,7 @@ const App = () => {
   const [Main, setMain] = useState('') ;
   const [Icon, setIcon] = useState('') ;
   const [OtherData, setOtherData] = useState([]) ;
-  const [Modal, setModal] = useState(true) ;
+  const [Modal, setModal] = useState(false) ;
   const [Msg, setMsg] = useState('Haleluya') ;
 
   // Prompt modal
