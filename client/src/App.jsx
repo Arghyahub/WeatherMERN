@@ -10,20 +10,43 @@ const App = () => {
   const [Main, setMain] = useState('') ;
   const [Icon, setIcon] = useState('') ;
   const [OtherData, setOtherData] = useState([]) ;
+  const [Modal, setModal] = useState(true) ;
+  const [Msg, setMsg] = useState('Haleluya') ;
+
+  // Prompt modal
+  const promptModal = (str) => {
+    setMsg(str) ;
+    setModal(true) ;
+    setTimeout(() => {
+      setModal(false);
+    }, 3000);
+  }
 
   // Function to fetch data from backend
   const getData = async () => {
-    const output = await fetch(`${backend}/getWeather/${City}`);
-    const json = await output.json();
-    
-    setMain(json.weather[0].main) ;
-    setIcon(`https://openweathermap.org/img/wn/${json.weather[0].icon}@2x.png`) ;
-    setOtherData([ 
-      { name: "Temp" , data: json.main.temp , icon: "images/temp.svg" } ,
-      { name: "Feels" , data: json.main.feels_like , icon: "images/feels.svg" } , 
-      { name: "Wind" , data: json.wind.speed , icon: "images/wind.svg" }
-    ]) ;
 
+    try {
+      const output = await fetch(`${backend}/getWeather/${City}`);
+      const json = await output.json();
+
+      if (json.cod === "404") {
+        promptModal(json.message) ;
+        return;
+      }
+      
+      setMain(json.weather[0].main) ;
+      setIcon(`https://openweathermap.org/img/wn/${json.weather[0].icon}@2x.png`) ;
+      setOtherData([ 
+        { name: "Temp" , data: json.main.temp , icon: "images/temp.svg" } ,
+        { name: "Feels" , data: json.main.feels_like , icon: "images/feels.svg" } , 
+        { name: "Wind" , data: json.wind.speed , icon: "images/wind.svg" }
+      ]) ;
+    
+    }
+    catch(err) {
+      promptModal("Some error occured") ;
+      console.log(err) ;
+    }
   }
 
   // Search Feature
@@ -35,6 +58,7 @@ const App = () => {
   }
 
   useEffect(() => {
+    promptModal("Welcome") ;
     getData() ;
   }, [])
 
@@ -67,7 +91,9 @@ const App = () => {
             )
           )}
         </div>
-
+        {Modal && (
+          <div className={`modal ${Modal? 'anim':''}`}>{Msg}</div>
+        )}
       </div>
     </div>
   )
