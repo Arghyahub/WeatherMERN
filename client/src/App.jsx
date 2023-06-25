@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import "./App.css"
 
+const backend = import.meta.env.VITE_BACKEND ;
+
 const App = () => {
   // Defining States to be used in the app
   const [City, setCity] = useState('kolkata') ;
@@ -11,7 +13,7 @@ const App = () => {
 
   // Function to fetch data from backend
   const getData = async () => {
-    const output = await fetch(`http://localhost:8000/getWeather/${City}`);
+    const output = await fetch(`${backend}/getWeather/${City}`);
     const json = await output.json();
     
     setMain(json.weather[0].main) ;
